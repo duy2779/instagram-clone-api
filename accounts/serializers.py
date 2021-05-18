@@ -12,3 +12,19 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    avatar_pic = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'full_name', 'email',
+                  'avatar_pic', 'following', 'followers')
+
+    def get_avatar_pic(self, obj):
+        try:
+            pic = obj.avatar_pic.url
+        except:
+            pic = None
+        return pic

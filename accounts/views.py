@@ -69,3 +69,41 @@ def users_recommended(request):
         'followers_count').reverse().exclude(id=user.id)[0:5]
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def follow_user(request, username):
+    user = request.user
+    try:
+        user_to_follow = User.objects.get(username=username)
+
+        if user == user_to_follow:
+            return Response('You can not follow yourself')
+
+        if user in user_to_follow.followers.all():
+            user_to_follow.followers.remove(user)
+            user_to_follow
+            return Response('User unfollowed')
+        else:
+            user_to_follow.followers.add(user)
+            user_to_follow.save()
+            return Response('User followed')
+    except Exception as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_204_NO_CONTENT_)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def is_following_user(request, username):
+    user = request.user
+    try:
+        user_to_check = User.objects.get(username=username)
+
+        if user in user_to_check.followers.all():
+            return Response(True)
+        return Response(False)
+    except Exception as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_204_NO_CONTENT_)

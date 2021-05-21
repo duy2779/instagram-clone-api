@@ -5,7 +5,6 @@ from .views import (
     UserView,
     users_recommended,
     follow_user,
-    is_following_user,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView
@@ -17,5 +16,4 @@ urlpatterns = [
     path('user', UserView.as_view(), name='user'),
     path('users-recommended', users_recommended, name='users-recommended'),
     path('follow/<str:username>', follow_user, name='follow-user'),
-    path('is-follow/<str:username>', is_following_user, name='is-follow-user'),
 ]

@@ -100,18 +100,3 @@ def follow_user(request, username):
     except Exception as e:
         message = {'detail': e}
         return Response(message, status=status.HTTP_204_NO_CONTENT_)
-
-
-@api_view(['GET'])
-@permission_classes((IsAuthenticated,))
-def is_following_user(request, username):
-    user = request.user
-    try:
-        user_to_check = User.objects.get(username=username)
-
-        if user in user_to_check.followers.all():
-            return Response(True)
-        return Response(False)
-    except Exception as e:
-        message = {'detail': e}
-        return Response(message, status=status.HTTP_204_NO_CONTENT_)

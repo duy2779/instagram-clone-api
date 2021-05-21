@@ -11,7 +11,5 @@ class User(AbstractUser):
         blank=True, null=True, default="default.png")
     email = models.EmailField(max_length=100, unique=True)
     full_name = models.CharField(max_length=200)
-    following = models.ManyToManyField(
-        "self", blank=True, symmetrical=False, related_name="user_following")
     followers = models.ManyToManyField(
-        "self", blank=True, symmetrical=False, related_name="user_followers")
+        "self", blank=True, symmetrical=False, related_name="following")

@@ -64,9 +64,17 @@ class UserView(APIView):
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def users_recommended(request):
+    """
+    Get users order by followers_count and 
+    exclude the users that the user has followed
+    """
     user = request.user
+    users_following = [user.id for user in user.following.all()]
+    # added the user to list that not get for users recommended
+    users_following.append(user.id)
+
     users = User.objects.annotate(followers_count=Count('followers')).order_by(
-        'followers_count').reverse().exclude(id=user.id)[0:5]
+        'followers_count').reverse().exclude(id__in=users_following)[0:5]
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 

@@ -11,6 +11,8 @@ from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 
 class UserRegisterView(APIView):
@@ -32,6 +34,13 @@ class UserRegisterView(APIView):
 
 
 class UserLoginView(APIView):
+    @swagger_auto_schema(request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'username': openapi.Schema(type=openapi.TYPE_STRING),
+            'password': openapi.Schema(type=openapi.TYPE_STRING),
+        }
+    ), responses={"200": openapi.Response(description="Success"), })
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
         if serializer.is_valid():

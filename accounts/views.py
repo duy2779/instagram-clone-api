@@ -70,6 +70,15 @@ class UserView(APIView):
         return Response(serializer.data)
 
 
+class GetUserByUsername(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, username):
+        user = User.objects.get(username=username)
+        serializer = UserSerializer(user, many=False)
+        return Response(serializer.data)
+
+
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def users_recommended(request):
@@ -100,7 +109,7 @@ def follow_user(request, username):
 
         if user in user_to_follow.followers.all():
             user_to_follow.followers.remove(user)
-            user_to_follow
+            user_to_follow.save()
             return Response('User unfollowed')
         else:
             user_to_follow.followers.add(user)

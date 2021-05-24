@@ -24,3 +24,22 @@ def get_posts(request):
     result_page = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(result_page, many=True)
     return paginator.get_paginated_response(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def toggle_like(request, post_id):
+    user = request.user
+    try:
+        post = Post.objects.get(id=post_id)
+        if user in post.users_like.all():
+            post.users_like.remove(user)
+            post.save()
+            return Response('Post unliked')
+        else:
+            post.users_like.add(user)
+            post.save()
+            return Response('Post liked')
+    except Exception as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_204_NO_CONTENT_)

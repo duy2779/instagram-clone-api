@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Post, PostComment
+from accounts.serializers import UserSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -12,7 +13,9 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
     def get_user(self, obj):
-        return obj.user.username
+        user = obj.user
+        serializer = UserSerializer(user, many=False)
+        return serializer.data
 
 
 class PostCommentSerializer(serializers.ModelSerializer):

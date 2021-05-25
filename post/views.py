@@ -41,3 +41,18 @@ def toggle_like(request, post_id):
     except Exception as e:
         message = {'detail': e}
         return Response(message, status=status.HTTP_204_NO_CONTENT_)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def add_comment(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        comment = request.data.get('comment')
+        post_comment = PostComment(
+            post=post, user=request.user, comment=comment)
+        post_comment.save()
+        return Response("added comment successful", status=status.HTTP_201_CREATED)
+    except Exception as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)

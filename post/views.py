@@ -9,8 +9,6 @@ from rest_framework.pagination import PageNumberPagination
 from .models import Post, PostComment
 from .serializers import PostSerializer, PostCommentSerializer
 
-# Create your views here.
-
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))

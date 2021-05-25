@@ -25,6 +25,11 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostCommentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = PostComment
         fields = ('__all__')
+
+    def get_user(self, obj):
+        return obj.user.username

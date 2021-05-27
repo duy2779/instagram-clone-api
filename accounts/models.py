@@ -13,3 +13,7 @@ class User(AbstractUser):
     full_name = models.CharField(max_length=200)
     followers = models.ManyToManyField(
         "self", blank=True, symmetrical=False, related_name="following")
+
+    @property
+    def posts_count(self):
+        return self.posts.all().count()

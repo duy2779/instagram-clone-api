@@ -16,11 +16,12 @@ class UserLoginSerializer(serializers.Serializer):
 
 class UserSerializer(serializers.ModelSerializer):
     avatar_pic = serializers.SerializerMethodField(read_only=True)
+    posts_count = serializers.ReadOnlyField()
 
     class Meta:
         model = User
         fields = ('id', 'username', 'full_name', 'email',
-                  'avatar_pic', 'following', 'followers')
+                  'avatar_pic', 'following', 'followers', 'posts_count')
 
     def get_avatar_pic(self, obj):
         try:

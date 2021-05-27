@@ -4,7 +4,7 @@ from accounts.models import User
 
 class Post(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=False, blank=False)
+        User, on_delete=models.CASCADE, null=False, blank=False, related_name="posts")
     caption = models.TextField()
     image = models.ImageField(null=False, blank=False)
     users_like = models.ManyToManyField(

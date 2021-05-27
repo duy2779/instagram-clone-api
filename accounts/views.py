@@ -74,9 +74,12 @@ class GetUserByUsername(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, username):
-        user = User.objects.get(username=username)
-        serializer = UserSerializer(user, many=False)
-        return Response(serializer.data)
+        try:
+            user = User.objects.get(username=username)
+            serializer = UserSerializer(user, many=False)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response(f'{e}', status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['GET'])

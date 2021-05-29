@@ -71,3 +71,11 @@ def create_post(request):
         user=request.user, caption=caption, image=image)
     serializer = PostSerializer(post, many=False)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_posts_by_username(request, username):
+    posts = Post.objects.filter(user__username=username).order_by('created')
+    serializer = PostSerializer(posts, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

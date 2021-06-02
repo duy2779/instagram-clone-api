@@ -1,3 +1,8 @@
+import os.path
+import uuid
+import random
+
+from django.core.files.storage import default_storage
 from django.shortcuts import render
 from django.db.models import Q, Count
 from django.contrib.auth import authenticate
@@ -10,9 +15,10 @@ from rest_framework import status
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class UserRegisterView(APIView):
@@ -121,3 +127,24 @@ def follow_user(request, username):
     except Exception as e:
         message = {'detail': e}
         return Response(message, status=status.HTTP_204_NO_CONTENT_)
+
+
+@api_view(['PATCH'])
+@permission_classes((IsAuthenticated,))
+@parser_classes([MultiPartParser, FormParser])
+def profile_avatar_update(request):
+    rd = random.Random()
+    avatar_pic = request.FILES['avatar']
+    extension = os.path.splitext(avatar_pic.name)[1]
+    avatar_pic.name = '{}{}'.format(
+        uuid.UUID(int=rd.getrandbits(128)), extension)
+    filename = default_storage.save(avatar_pic.name, avatar_pic)
+    setattr(request.user, 'avatar_pic', filename)
+    serializer = UserSerializer(request.user, data={}, partial=True)
+    if serializer.is_valid():
+        user = serializer.save()
+        response = {'type': 'Success', 'message': 'successfully updated your info',
+                    'user': UserSerializer(user).data}
+    else:
+        response = serializer.errors
+    return Response(response)

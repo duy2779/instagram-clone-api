@@ -63,7 +63,6 @@ def add_comment(request, post_id):
 @permission_classes((IsAuthenticated,))
 @parser_classes([MultiPartParser, FormParser])
 def create_post(request):
-    print(request.data)
     user_id = request.data.get('user') or None
     caption = request.data.get('caption') or None
     image = request.data.get('image') or None

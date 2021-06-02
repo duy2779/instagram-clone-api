@@ -14,6 +14,10 @@ class Post(models.Model):
     def __str__(self):
         return self.caption
 
+    # def delete(self, using=None, keep_parens=False):
+    #     self.image.storage.delete(self.image.name)
+    #     super().delete()
+
     @property
     def likes_count(self):
         return self.users_like.all().count()

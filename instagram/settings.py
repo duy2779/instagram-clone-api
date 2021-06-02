@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'drf_yasg',
+    'django_cleanup.apps.CleanupConfig',
     # my app
     'accounts.apps.AccountsConfig',
     'post.apps.PostConfig',

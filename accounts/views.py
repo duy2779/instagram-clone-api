@@ -160,5 +160,5 @@ def profile_info_update(request):
         response = {'type': 'Success', 'message': 'successfully updated your info',
                     'user': UserSerializer(user).data}
     else:
-        response = serializer.errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(response)

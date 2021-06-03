@@ -152,7 +152,6 @@ def profile_avatar_update(request):
 
 @api_view(['PATCH'])
 @permission_classes((IsAuthenticated,))
-@parser_classes([MultiPartParser, FormParser])
 def profile_info_update(request):
     serializer = UserSerializer(
         request.user, data=request.data, partial=True)

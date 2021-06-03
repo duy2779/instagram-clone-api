@@ -148,3 +148,18 @@ def profile_avatar_update(request):
     else:
         response = serializer.errors
     return Response(response)
+
+
+@api_view(['PATCH'])
+@permission_classes((IsAuthenticated,))
+@parser_classes([MultiPartParser, FormParser])
+def profile_info_update(request):
+    serializer = UserSerializer(
+        request.user, data=request.data, partial=True)
+    if serializer.is_valid():
+        user = serializer.save()
+        response = {'type': 'Success', 'message': 'successfully updated your info',
+                    'user': UserSerializer(user).data}
+    else:
+        response = serializer.errors
+    return Response(response)

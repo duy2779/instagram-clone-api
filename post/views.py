@@ -78,3 +78,17 @@ def get_posts_by_username(request, username):
     posts = Post.objects.filter(user__username=username).order_by('-created')
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@permission_classes((IsAuthenticated,))
+def delete_post(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        if post.user == request.user:
+            post.delete()
+            return Response("delete a post successfully", status=status.HTTP_200_OK)
+        else:
+            return Response("You don't have permission to delete this post", status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({'details': f"{e}"}, status=status.HTTP_204_NO_CONTENT)

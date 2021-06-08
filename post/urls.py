@@ -5,7 +5,8 @@ from .views import (
     toggle_like,
     add_comment,
     create_post,
-    get_posts_by_username
+    get_posts_by_username,
+    delete_post,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('create-post', create_post, name='create-post'),
     path('get-posts/<str:username>', get_posts_by_username,
          name='get-posts-by-username'),
+    path('delete-post/<str:post_id>', delete_post, name='delete-post'),
 ]

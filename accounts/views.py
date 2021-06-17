@@ -134,7 +134,25 @@ def follow_user(request, username):
             return Response('User followed')
     except Exception as e:
         message = {'detail': e}
-        return Response(message, status=status.HTTP_204_NO_CONTENT_)
+        return Response(f'{message}', status=status.HTTP_204_NO_CONTENT_)
+
+
+@api_view(['PATCH'])
+@permission_classes((IsAuthenticated,))
+def remove_follower(request, username):
+    user = request.user
+    try:
+        follower_to_remove = User.objects.get(username=username)
+
+        if user == follower_to_remove:
+            return Response('You can not remove yourself', status=status.HTTP_400_BAD_REQUEST)
+
+        user.followers.remove(follower_to_remove)
+        user.save()
+        return Response(f'remove {username} successfully')
+    except Exception as e:
+        message = {'detail': e}
+        return Response(f'{message}', status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PATCH'])

@@ -6,19 +6,27 @@ from django.core.files.storage import default_storage
 from django.shortcuts import render
 from django.db.models import Q, Count
 from django.contrib.auth import authenticate
-from rest_framework.views import APIView
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer
+
 from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
+
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser, FormParser
+
+from .serializers import (
+    UserRegisterSerializer,
+    UserLoginSerializer,
+    UserSerializer,
+    UserPreviewSerializer
+)
+from .models import User
 
 
 class UserRegisterView(APIView):
@@ -162,3 +170,15 @@ def profile_info_update(request):
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(response)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_followers(request, username):
+    try:
+        user = User.objects.get(username=username)
+        followers = user.followers.all()
+        serializer = UserPreviewSerializer(followers, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response(f'{e}', status=status.HTTP_400_BAD_REQUEST)

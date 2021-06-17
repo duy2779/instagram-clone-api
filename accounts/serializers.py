@@ -29,3 +29,13 @@ class UserSerializer(serializers.ModelSerializer):
         except:
             pic = None
         return pic
+
+
+class UserPreviewSerializer(serializers.ModelSerializer):
+    """
+        Get base infomation of user for some component
+        as user in followers, following, users_recommended...
+    """
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'full_name', 'avatar_pic')

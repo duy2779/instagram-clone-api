@@ -10,6 +10,7 @@ from .views import (
     profile_info_update,
     get_followers,
     remove_follower,
+    get_following,
 )
 
 urlpatterns = [
@@ -24,4 +25,5 @@ urlpatterns = [
     path('update-avatar', profile_avatar_update, name='update-avatar'),
     path('update-info', profile_info_update, name='update-info'),
     path('get-followers/<str:username>', get_followers, name='get-followers'),
+    path('get-following/<str:username>', get_following, name='get-following'),
 ]

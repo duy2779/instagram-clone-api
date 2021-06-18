@@ -122,7 +122,7 @@ def follow_user(request, username):
         user_to_follow = User.objects.get(username=username)
 
         if user == user_to_follow:
-            return Response('You can not follow yourself')
+            return Response('You can not follow yourself', status=status.HTTP_400_BAD_REQUEST)
 
         if user in user_to_follow.followers.all():
             user_to_follow.followers.remove(user)
@@ -197,6 +197,18 @@ def get_followers(request, username):
         user = User.objects.get(username=username)
         followers = user.followers.all()
         serializer = UserPreviewSerializer(followers, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response(f'{e}', status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_following(request, username):
+    try:
+        user = User.objects.get(username=username)
+        following = user.following.all()
+        serializer = UserPreviewSerializer(following, many=True)
         return Response(serializer.data)
     except Exception as e:
         return Response(f'{e}', status=status.HTTP_400_BAD_REQUEST)

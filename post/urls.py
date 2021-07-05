@@ -7,6 +7,7 @@ from .views import (
     create_post,
     get_posts_by_username,
     delete_post,
+    get_post_by_id,
 )
 
 urlpatterns = [
@@ -17,4 +18,5 @@ urlpatterns = [
     path('get-posts/<str:username>', get_posts_by_username,
          name='get-posts-by-username'),
     path('delete-post/<str:post_id>', delete_post, name='delete-post'),
+    path('get-post/<str:post_id>', get_post_by_id, name='get-post'),
 ]

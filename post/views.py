@@ -92,3 +92,14 @@ def delete_post(request, post_id):
             return Response("You don't have permission to delete this post", status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({'details': f"{e}"}, status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_post_by_id(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+        serializer = PostSerializer(post, many=False)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({'details': f"{e}"}, status=status.HTTP_204_NO_CONTENT)

@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/accounts/', include('accounts.urls')),
     path('api/post/', include('post.urls')),
+    path('api/notification/', include('notification.urls')),
 
     path('', schema_view.with_ui('swagger', cache_timeout=0),
          name='schema-swagger-ui'),

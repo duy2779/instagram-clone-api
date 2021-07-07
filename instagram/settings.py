@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # my app
     'accounts.apps.AccountsConfig',
     'post.apps.PostConfig',
+    'notification.apps.NotificationConfig',
 
 ]
 

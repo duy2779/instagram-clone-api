@@ -9,6 +9,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 
 from .models import Post, PostComment
 from .serializers import PostSerializer, PostCommentSerializer
+from notification.models import Notification
 
 
 @api_view(['GET'])
@@ -38,6 +39,12 @@ def toggle_like(request, post_id):
         else:
             post.users_like.add(user)
             post.save()
+            Notification.objects.create(
+                user=post.user,
+                created_by=user,
+                notification_type='follow',
+                content=f"{user} liked a post by {post.user}"
+            )
             return Response('Post liked')
     except Exception as e:
         message = {'detail': e}

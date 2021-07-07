@@ -20,6 +20,8 @@ from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser, FormParser
 
+from notification.models import Notification
+
 from .serializers import (
     UserRegisterSerializer,
     UserLoginSerializer,
@@ -131,6 +133,12 @@ def follow_user(request, username):
         else:
             user_to_follow.followers.add(user)
             user_to_follow.save()
+            Notification.objects.create(
+                user=user_to_follow,
+                created_by=user,
+                notification_type='follow',
+                content=f"{user} followed {user_to_follow}"
+            )
             return Response('User followed')
     except Exception as e:
         message = {'detail': e}

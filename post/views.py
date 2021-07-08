@@ -42,7 +42,8 @@ def toggle_like(request, post_id):
             Notification.objects.create(
                 user=post.user,
                 created_by=user,
-                notification_type='follow',
+                notification_type='like',
+                post=post,
                 content=f"{user} liked a post by {post.user}"
             )
             return Response('Post liked')

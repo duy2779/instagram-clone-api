@@ -17,3 +17,7 @@ class User(AbstractUser):
     @property
     def posts_count(self):
         return self.posts.all().count()
+    
+    @property
+    def unseen_notifications_count(self):
+        return self.notifications.filter(seen=False).count()

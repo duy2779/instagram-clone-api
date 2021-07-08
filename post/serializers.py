@@ -24,6 +24,12 @@ class PostSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
+class PostNotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ('id', 'image')
+
+
 class PostCommentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField(read_only=True)
 

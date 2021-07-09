@@ -129,6 +129,12 @@ def follow_user(request, username):
         if user in user_to_follow.followers.all():
             user_to_follow.followers.remove(user)
             user_to_follow.save()
+
+            Notification.objects.filter(
+                user=user_to_follow,
+                created_by=user,
+                notification_type='follow'
+            ).delete()
             return Response('User unfollowed')
         else:
             user_to_follow.followers.add(user)

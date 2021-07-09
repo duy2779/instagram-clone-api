@@ -35,17 +35,23 @@ def toggle_like(request, post_id):
         if user in post.users_like.all():
             post.users_like.remove(user)
             post.save()
+            Notification.objects.filter(
+                notification_type="like",
+                user=post.user,
+                created_by=user,
+            ).delete()
             return Response('Post unliked')
         else:
             post.users_like.add(user)
             post.save()
-            Notification.objects.create(
-                user=post.user,
-                created_by=user,
-                notification_type='like',
-                post=post,
-                content=f"{user} liked a post by {post.user}"
-            )
+            if user != post.user:
+                Notification.objects.create(
+                    user=post.user,
+                    created_by=user,
+                    notification_type='like',
+                    post=post,
+                    content=f"{user} liked a post by {post.user}"
+                )
             return Response('Post liked')
     except Exception as e:
         message = {'detail': e}

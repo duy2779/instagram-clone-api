@@ -226,3 +226,20 @@ def get_following(request, username):
         return Response(serializer.data)
     except Exception as e:
         return Response(f'{e}', status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def get_users(request):
+    query = request.query_params.get('q')
+    query = query.strip()
+    if query == '':
+        user = []
+    else:
+        user = User.objects.filter(
+            Q(username__icontains=query) |
+            Q(full_name__icontains=query)
+        ).annotate(followers_count=Count('followers')).order_by(
+            'followers_count').reverse()
+    serializer = UserSerializer(user, many=True)
+    return Response(serializer.data)

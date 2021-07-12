@@ -11,6 +11,7 @@ from .views import (
     get_followers,
     remove_follower,
     get_following,
+    get_users,
 )
 
 urlpatterns = [
@@ -26,4 +27,5 @@ urlpatterns = [
     path('update-info', profile_info_update, name='update-info'),
     path('get-followers/<str:username>', get_followers, name='get-followers'),
     path('get-following/<str:username>', get_following, name='get-following'),
+    path('get-users', get_users, name='get-users'),
 ]

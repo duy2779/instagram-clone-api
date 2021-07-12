@@ -37,7 +37,7 @@ def toggle_like(request, post_id):
             post.save()
             Notification.objects.filter(
                 notification_type="like",
-                user=post.user,
+                post=post,
                 created_by=user,
             ).delete()
             return Response('Post unliked')

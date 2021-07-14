@@ -1,6 +1,7 @@
 import os.path
 import uuid
 import random
+from urllib.error import HTTPError
 
 from django.core.files.storage import default_storage
 from django.shortcuts import render
@@ -19,6 +20,10 @@ from rest_framework.decorators import api_view, permission_classes, parser_class
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from rest_framework.parsers import MultiPartParser, FormParser
+
+from social_core.backends.oauth import BaseOAuth2
+from social_core.exceptions import MissingBackend, AuthTokenError, AuthForbidden
+from social_django.utils import load_strategy, load_backend
 
 from notification.models import Notification
 
@@ -102,7 +107,7 @@ class GetUserByUsername(APIView):
 @permission_classes((IsAuthenticated,))
 def users_recommended(request):
     """
-    Get users order by followers_count and 
+    Get users order by followers_count and
     exclude the users that the user has followed
     """
     user = request.user
@@ -243,3 +248,55 @@ def get_users(request):
             'followers_count').reverse()
     serializer = UserSerializer(user, many=True)
     return Response(serializer.data)
+
+
+@api_view(['POST'])
+def social_login(request):
+    strategy = load_strategy(request)
+
+    backend = load_backend(strategy=strategy, name='facebook',
+                           redirect_uri=None)
+    try:
+        if isinstance(backend, BaseOAuth2):
+            access_token = request.POST.get('access_token')
+            print("access_token:", access_token)
+        user = backend.do_auth(access_token)
+    except HTTPError as error:
+        return Response({
+            "error": {
+                "access_token": "Invalid token",
+                "details": str(error)
+            }
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except AuthTokenError as error:
+        return Response({
+            "error": "Invalid credentials",
+            "details": str(error)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        authenticated_user = backend.do_auth(access_token, user=user)
+
+    except HTTPError as error:
+        return Response({
+            "error": "invalid token",
+            "details": str(error)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    except AuthForbidden as error:
+        return Response({
+            "error": "invalid token",
+            "details": str(error)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    if authenticated_user and authenticated_user.is_active:
+        refresh = TokenObtainPairSerializer.get_token(authenticated_user)
+        is_new = False
+        if not authenticated_user.email:
+            is_new = True
+        data = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'is_new': is_new,
+        }
+        return Response(data, status=status.HTTP_200_OK)

@@ -12,6 +12,7 @@ from .views import (
     remove_follower,
     get_following,
     get_users,
+    social_login,
 )
 
 urlpatterns = [
@@ -28,4 +29,7 @@ urlpatterns = [
     path('get-followers/<str:username>', get_followers, name='get-followers'),
     path('get-following/<str:username>', get_following, name='get-following'),
     path('get-users', get_users, name='get-users'),
+
+    path('social-login', social_login, name='social-login'),
+
 ]

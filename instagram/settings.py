@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_cleanup.apps.CleanupConfig',
+
+    'social.apps.django_app.default',
+    'social_django',
     # my app
     'accounts.apps.AccountsConfig',
     'post.apps.PostConfig',
@@ -60,6 +63,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'social_django.middleware.SocialAuthExceptionMiddleware'
 
 ]
 
@@ -184,5 +189,14 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "https://localhost:3000",
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+SOCIAL_AUTH_FACEBOOK_KEY = ('549417432860509')
+SOCIAL_AUTH_FACEBOOK_SECRET = ('fe12ed24c7af1f6e84814ec9ba3efbed')
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']

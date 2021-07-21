@@ -194,6 +194,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "https://localhost:3000",
+    "https://instagram-2779.vercel.app",
 ]
 
 AUTHENTICATION_BACKENDS = [

@@ -94,13 +94,16 @@ WSGI_APPLICATION = 'instagram.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
+DATABASES = {
+    'default': dj_database_url.config()
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -146,7 +149,6 @@ MEDIA_URL = '/images/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-django_heroku.settings(locals())
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 
@@ -205,3 +207,5 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_FACEBOOK_KEY = ('549417432860509')
 SOCIAL_AUTH_FACEBOOK_SECRET = ('fe12ed24c7af1f6e84814ec9ba3efbed')
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+
+django_heroku.settings(locals())

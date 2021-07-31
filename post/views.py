@@ -62,11 +62,20 @@ def toggle_like(request, post_id):
 @permission_classes((IsAuthenticated,))
 def add_comment(request, post_id):
     try:
+        user = request.user
         post = Post.objects.get(id=post_id)
         comment = request.data.get('comment')
         post_comment = PostComment(
             post=post, user=request.user, comment=comment)
         post_comment.save()
+        if user != post.user:
+            Notification.objects.create(
+                user=post.user,
+                created_by=user,
+                notification_type='comment',
+                post=post,
+                content=f"{user} added a comment to {post.user}"
+            )
         return Response("added comment successful", status=status.HTTP_201_CREATED)
     except Exception as e:
         message = {'detail': e}

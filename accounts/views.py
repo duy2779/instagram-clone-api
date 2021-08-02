@@ -134,23 +134,26 @@ def follow_user(request, username):
         if user in user_to_follow.followers.all():
             user_to_follow.followers.remove(user)
             user_to_follow.save()
+            serializer = UserSerializer(user, many=False)
 
             Notification.objects.filter(
                 user=user_to_follow,
                 created_by=user,
                 notification_type='follow'
             ).delete()
-            return Response('User unfollowed')
+            return Response({'type': 'follow', 'user': serializer.data})
         else:
             user_to_follow.followers.add(user)
             user_to_follow.save()
+            serializer = UserSerializer(user, many=False)
+
             Notification.objects.create(
                 user=user_to_follow,
                 created_by=user,
                 notification_type='follow',
                 content=f"{user} followed {user_to_follow}"
             )
-            return Response('User followed')
+            return Response({'type': 'unfollow', 'user': serializer.data})
     except Exception as e:
         message = {'detail': e}
         return Response(f'{message}', status=status.HTTP_204_NO_CONTENT_)
@@ -168,7 +171,8 @@ def remove_follower(request, username):
 
         user.followers.remove(follower_to_remove)
         user.save()
-        return Response(f'remove {username} successfully')
+        serializer = UserSerializer(user, many=False)
+        return Response({'message':f'remove {username} successfully', 'user':serializer.data})
     except Exception as e:
         message = {'detail': e}
         return Response(f'{message}', status=status.HTTP_400_BAD_REQUEST)
